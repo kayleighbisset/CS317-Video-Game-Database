@@ -224,14 +224,30 @@ def update_account():
 while True:
     print("\nVideo Game Database")
     print("1. Search for Player")
-    print("2. Exit")
+    print("2. Combine Tables")
+    print("3. Summarize a Player")
+    print("4. Search for Above-Average Leadboard Points")
+    print("5. Register New Player")
+    print("6. Update Account Information")
+    print("7. LALLALALAL")
+    print("8. Exit")
 
     choice = input("Enter your choice: ")
 
     if choice == "1":
         search_player()
     elif choice == "2":
-        break
+        player_match_history()
+    elif choice == "3":
+        player_statistics()
+    elif choice == '4':
+        above_average_players()
+    elif choice == '5':
+        register_player()
+    elif choice == "6":
+        update_account()
+    elif choice == "8":
+        break    
     else:
         print("Invalid choice.")
 
