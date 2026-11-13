@@ -156,7 +156,7 @@ def register_player():
         db.rollback()
         print("Database error. Could not register player.")
 
-#Feature 6: Update account information
+# Feature 6: Update account information
 def update_account():
     username = input("Enter username: ")
 
@@ -220,6 +220,77 @@ def update_account():
     else:
         print("No players found.")
 
+
+# Feature 7: Record a New Match (Transaction)
+def record_match():
+    try:
+        match_id = int(input("Enter Match ID: "))
+        map_id = int(input("Enter Map ID: "))
+        game_mode = input("Enter game mode: ").strip()
+        player_count = int(input("Enter number of players: "))
+
+        if match_id <= 0 or map_id <= 0 or player_count <= 0 or not game_mode:
+            print("Please enter valid match information.")
+            return
+
+        # Start transaction
+        db.rollback()
+        db.start_transaction()
+
+        sql = """
+        INSERT INTO GameMatch
+        (MatchID, MatchDate, GameMode, PlayerCount, Map_MapID)
+        VALUES (%s, NOW(), %s, %s, %s)
+        """
+
+        cursor.execute(sql, (match_id, game_mode, player_count, map_id))
+
+        # Record each player's statistics
+        for i in range(player_count):
+            print("\nPlayer", i + 1)
+
+            player_id = int(input("Enter Player ID: "))
+            placement = int(input("Enter placement: "))
+            kills = int(input("Enter kills: "))
+            damage = int(input("Enter damage dealt: "))
+            survival = int(input("Enter survival time: "))
+
+            if (player_id <= 0 or placement < 1 or
+                    placement > player_count or kills < 0 or
+                    damage < 0 or survival < 0):
+                raise ValueError
+
+            sql = """
+            INSERT INTO PlayerMatch
+            (Player_PlayerID, Match_MatchID, Placement,
+             Kills, DamageDealt, SurvivalTime)
+            VALUES (%s, %s, %s, %s, %s, %s)
+            """
+
+            cursor.execute(sql, (player_id, match_id,
+                                 placement, kills, damage, survival))
+
+        db.commit()
+        print("\nMatch and player statistics saved successfully!")
+
+    except ValueError:
+        db.rollback()
+        print("Invalid input. Transaction rolled back.")
+
+    except mysql.connector.IntegrityError as error:
+        db.rollback()
+
+        if error.errno == 1452:
+            print("Player ID or Map ID does not exist. Transaction rolled back.")
+        elif error.errno == 1062:
+            print("Match ID already exists or a player was entered twice. Transaction rolled back.")
+        else:
+            print("Invalid match information. Transaction rolled back.")
+
+    except mysql.connector.Error:
+        db.rollback()
+        print("Database error. Transaction rolled back.")
+
 # Main menu
 while True:
     print("\nVideo Game Database")
@@ -229,7 +300,7 @@ while True:
     print("4. Search for Above-Average Leadboard Points")
     print("5. Register New Player")
     print("6. Update Account Information")
-    print("7. LALLALALAL")
+    print("7. Record New Match")
     print("8. Exit")
 
     choice = input("Enter your choice: ")
@@ -246,6 +317,8 @@ while True:
         register_player()
     elif choice == "6":
         update_account()
+    elif choice == "7":
+        record_match()
     elif choice == "8":
         break    
     else:
