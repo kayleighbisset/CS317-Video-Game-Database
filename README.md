@@ -162,5 +162,6 @@ AI was used to assist with Python debugging, examples when creating multiple dat
 
 **| Team Member | Contribution |******
 | --- | --- |
-| [Kaylee Trujillo] | Created features 2,6, 8, and 9. |
-| [Member 2] | [Describe responsibilities] |
+| [Kaylee Trujillo] | Created features 1, 2,6, 8, and 9. |
+Together we created the data and ideas for names along with formatting. 
+| [Kayleigh Bisset] | Created features 1, 3, 4, 5, and 7|
