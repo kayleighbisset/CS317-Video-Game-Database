@@ -155,7 +155,7 @@ SHOW GRANTS FOR 'videogame_app'@'localhost';
 
 ## AI Assistance
 
-AI was used to assist with Python debugging, examples when creating multiple data inputs for users, and clarification with formatting. The team reviewed and tested application behavior locally. 
+AI was used to assist with Python debugging, examples when creating multiple data inputs for users, and clarification with formatting. AI was also utlized to create a professional viewing of a README file. The team reviewed and tested application behavior locally. 
 
 ## Team Contributions
 
