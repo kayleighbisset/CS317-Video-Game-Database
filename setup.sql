@@ -1,6 +1,7 @@
 DROP DATABASE IF EXISTS VideoGameDB;
 CREATE DATABASE VideoGameDB;
 USE VideoGameDB;
+
 -- create tables (renamed the Match table name to GameMatch to avoid confusion)
 CREATE TABLE Player (
 PlayerID INT PRIMARY KEY,
@@ -46,9 +47,11 @@ Placement INT,
 Kills INT,
 DamageDealt INT,
 SurvivalTime INT,
+Weapon_WeaponID INT,
 PRIMARY KEY (Player_PlayerID, Match_MatchID),
 FOREIGN KEY (Player_PlayerID) REFERENCES Player(PlayerID),
-FOREIGN KEY (Match_MatchID) REFERENCES GameMatch(MatchID)
+FOREIGN KEY (Match_MatchID) REFERENCES GameMatch(MatchID),
+FOREIGN KEY (Weapon_WeaponID) REFERENCES Weapon(WeaponID)
 );
 CREATE TABLE LeaderboardEntry (
 RankPosition INT,
@@ -115,36 +118,38 @@ INSERT INTO GameMatch VALUES
 (10, '2026-04-26 22:05:00', 'Solo', 3, 10);
 
 INSERT INTO PlayerMatch VALUES
-(1, 1, 1, 6, 900, 1200),
-(2, 1, 2, 4, 650, 1100),
-(3, 1, 3, 2, 400, 900),
-(1, 2, 2, 3, 500, 1000),
-(2, 2, 1, 7, 950, 1250),
-(3, 2, 3, 1, 300, 800),
-(4, 3, 1, 8, 1020, 1320),
-(1, 3, 2, 5, 780, 1140),
-(5, 3, 3, 2, 410, 850),
-(6, 4, 1, 6, 890, 1250),
-(2, 4, 2, 4, 610, 1080),
-(7, 4, 3, 1, 270, 720),
-(8, 5, 1, 9, 1170, 1400),
-(3, 5, 2, 3, 560, 1070),
-(9, 5, 3, 2, 390, 790),
-(10, 6, 1, 7, 980, 1270),
-(1, 6, 2, 5, 730, 1100),
-(6, 6, 3, 1, 310, 680),
-(4, 7, 1, 6, 930, 1290),
-(8, 7, 2, 3, 520, 970),
-(2, 7, 3, 2, 450, 820),
-(5, 8, 1, 8, 1080, 1360),
-(7, 8, 2, 4, 640, 1020),
-(9, 8, 3, 1, 240, 710),
-(3, 9, 1, 5, 870, 1230),
-(10, 9, 2, 4, 600, 1090),
-(4, 9, 3, 2, 370, 800),
-(6, 10, 1, 7, 1010, 1340),
-(1, 10, 2, 3, 590, 1000),
-(8, 10, 3, 2, 420, 830);
+
+INSERT INTO PlayerMatch VALUES
+(1, 1, 1, 6, 900, 1200, 1),
+(2, 1, 2, 4, 650, 1100, 2),
+(3, 1, 3, 2, 400, 900, 3),
+(1, 2, 2, 3, 500, 1000, 2),
+(2, 2, 1, 7, 950, 1250, 3),
+(3, 2, 3, 1, 300, 800, 4),
+(4, 3, 1, 8, 1020, 1320, 6),
+(1, 3, 2, 5, 780, 1140, 3),
+(5, 3, 3, 2, 410, 850, 7),
+(6, 4, 1, 6, 890, 1250, 9),
+(2, 4, 2, 4, 610, 1080, 5),
+(7, 4, 3, 1, 270, 720, 10),
+(8, 5, 1, 9, 1170, 1400, 2),
+(3, 5, 2, 3, 560, 1070, 7),
+(9, 5, 3, 2, 390, 790, 3),
+(10, 6, 1, 7, 980, 1270, 5),
+(1, 6, 2, 5, 730, 1100, 6),
+(6, 6, 3, 1, 310, 680, 1),
+(4, 7, 1, 6, 930, 1290, 10),
+(8, 7, 2, 3, 520, 970, 4),
+(2, 7, 3, 2, 450, 820, 8),
+(5, 8, 1, 8, 1080, 1360, 2),
+(7, 8, 2, 4, 640, 1020, 4),
+(9, 8, 3, 1, 240, 710, 6),
+(3, 9, 1, 5, 870, 1230, 1),
+(10, 9, 2, 4, 600, 1090, 8),
+(4, 9, 3, 2, 370, 800, 2),
+(6, 10, 1, 7, 1010, 1340, 5),
+(1, 10, 2, 3, 590, 1000, 10),
+(8, 10, 3, 2, 420, 830, 7);
 
 INSERT INTO LeaderboardEntry VALUES
 (1, 2500, 8, 1, 1),
