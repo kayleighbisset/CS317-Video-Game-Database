@@ -30,27 +30,25 @@ def search_player():
             print(player)
     else:
         print("No players found.")
-        
-# Feature 2: Combine tables using JOIN
+
+# Feature 2: Combine tables using join
 def player_match_history():
     username = input("Enter username: ")
 
     sql = """
-        SELECT gm.MatchID,
-               gm.MatchDate,
-               m.MapName,
-               pm.Placement,
-               pm.Kills,
-               pm.DamageDealt
-        FROM Player AS p
-        JOIN PlayerMatch AS pm
-            ON p.PlayerID = pm.Player_PlayerID
-        JOIN GameMatch AS gm
-            ON pm.Match_MatchID = gm.MatchID
-        JOIN Map AS m
-            ON gm.Map_MapID = m.MapID
-        WHERE p.UserName LIKE %s
-        ORDER BY gm.MatchDate DESC
+    SELECT MatchID, MatchDate, MapName, GameMode,
+           Placement, Kills, DamageDealt, WeaponName
+    FROM Player
+    JOIN PlayerMatch
+        ON Player.PlayerID = PlayerMatch.Player_PlayerID
+    JOIN GameMatch
+        ON PlayerMatch.Match_MatchID = GameMatch.MatchID
+    JOIN Map
+        ON GameMatch.Map_MapID = Map.MapID
+    JOIN Weapon
+        ON PlayerMatch.Weapon_WeaponID = Weapon.WeaponID
+    WHERE UserName LIKE %s
+    ORDER BY MatchDate DESC
     """
 
     cursor.execute(sql, ("%" + username + "%",))
@@ -63,10 +61,11 @@ def player_match_history():
             print("\nMatch ID:", match[0])
             print("Match Date:", match[1])
             print("Map:", match[2])
-            print("Placement:", match[3])
-            print("Kills:", match[4])
-            print("Damage Dealt:", match[5])
-
+            print("Game Mode:", match[3])
+            print("Placement:", match[4])
+            print("Kills:", match[5])
+            print("Damage Dealt:", match[6])
+            print("Weapon:", match[7])
     else:
         print("No match history found.")
 
@@ -254,7 +253,7 @@ def record_match():
             kills = int(input("Enter kills: "))
             damage = int(input("Enter damage dealt: "))
             survival = int(input("Enter survival time: "))
-
+            weapon_id = int(input("Enter Weapon ID: ")) 
             if (player_id <= 0 or placement < 1 or
                     placement > player_count or kills < 0 or
                     damage < 0 or survival < 0):
@@ -263,12 +262,11 @@ def record_match():
             sql = """
             INSERT INTO PlayerMatch
             (Player_PlayerID, Match_MatchID, Placement,
-             Kills, DamageDealt, SurvivalTime)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            Kills, DamageDealt, SurvivalTime, Weapon_WeaponID)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
             """
-
             cursor.execute(sql, (player_id, match_id,
-                                 placement, kills, damage, survival))
+                    placement, kills, damage, survival, weapon_id))
 
         db.commit()
         print("\nMatch and player statistics saved successfully!")
@@ -291,33 +289,6 @@ def record_match():
         db.rollback()
         print("Database error. Transaction rolled back.")
 
-# Security Demonstration: Testing restricted DELETE permission
-def test_delete_permission():
-
-    #existent player ID to show that there is existing ID and would affect data
-    player_id = 10
-
-    sql = """
-        DELETE FROM Player
-        WHERE PlayerID = %s
-    """
-    #will attempt to conduct non-authorized functions
-    try:
-        cursor.execute(sql, (player_id,))
-        db.rollback()
-
-        print("Permission test failed.")
-        print("The account was allowed to execute DELETE.")
-
-    except mysql.connector.Error as error:
-        db.rollback()
-
-        if error.errno == 1142:
-            print("\nPermission Denied!")
-            print("You do not have permission to delete player records.")
-        else:
-            print("Database error. Unable to complete operation.")
-
 # Main menu
 while True:
     print("\nVideo Game Database")
@@ -327,8 +298,8 @@ while True:
     print("4. Search for Above-Average Leadboard Points")
     print("5. Register New Player")
     print("6. Update Account Information")
-    print("8. Security Test")
-    print("9. Exit")
+    print("7. Record New Match")
+    print("8. Exit")
 
     choice = input("Enter your choice: ")
 
@@ -347,9 +318,7 @@ while True:
     elif choice == "7":
         record_match()
     elif choice == "8":
-        test_delete_permission()
-    elif choice == "9":
-        break
+        break    
     else:
         print("Invalid choice.")
 
