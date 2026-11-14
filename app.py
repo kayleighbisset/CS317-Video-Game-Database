@@ -291,6 +291,33 @@ def record_match():
         db.rollback()
         print("Database error. Transaction rolled back.")
 
+# Security Demonstration: Testing restricted DELETE permission
+def test_delete_permission():
+
+    #existent player ID to show that there is existing ID and would affect data
+    player_id = 10
+
+    sql = """
+        DELETE FROM Player
+        WHERE PlayerID = %s
+    """
+    #will attempt to conduct non-authorized functions
+    try:
+        cursor.execute(sql, (player_id,))
+        db.rollback()
+
+        print("Permission test failed.")
+        print("The account was allowed to execute DELETE.")
+
+    except mysql.connector.Error as error:
+        db.rollback()
+
+        if error.errno == 1142:
+            print("\nPermission Denied!")
+            print("You do not have permission to delete player records.")
+        else:
+            print("Database error. Unable to complete operation.")
+
 # Main menu
 while True:
     print("\nVideo Game Database")
@@ -300,8 +327,8 @@ while True:
     print("4. Search for Above-Average Leadboard Points")
     print("5. Register New Player")
     print("6. Update Account Information")
-    print("7. Record New Match")
-    print("8. Exit")
+    print("8. Security Test")
+    print("9. Exit")
 
     choice = input("Enter your choice: ")
 
@@ -320,7 +347,9 @@ while True:
     elif choice == "7":
         record_match()
     elif choice == "8":
-        break    
+        test_delete_permission()
+    elif choice == "9":
+        break
     else:
         print("Invalid choice.")
 
