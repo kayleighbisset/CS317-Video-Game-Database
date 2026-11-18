@@ -289,6 +289,16 @@ def record_match():
         db.rollback()
         print("Database error. Transaction rolled back.")
 
+# Test: Delete Permission
+def test_delete():
+    try:
+        cursor.execute("DELETE FROM Player WHERE PlayerID = %s", (10,))
+        db.rollback()
+        print("Delete was allowed.")
+    except mysql.connector.Error:
+        db.rollback()
+        print("Permission denied! Cannot delete players.")
+
 # Main menu
 while True:
     print("\nVideo Game Database")
@@ -299,7 +309,8 @@ while True:
     print("5. Register New Player")
     print("6. Update Account Information")
     print("7. Record New Match")
-    print("8. Exit")
+    print("8. DELETE test")
+    print("9. Exit")
 
     choice = input("Enter your choice: ")
 
@@ -318,6 +329,8 @@ while True:
     elif choice == "7":
         record_match()
     elif choice == "8":
+        test_delete()
+    elif choice == "9":
         break    
     else:
         print("Invalid choice.")
