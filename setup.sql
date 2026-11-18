@@ -118,8 +118,6 @@ INSERT INTO GameMatch VALUES
 (10, '2026-04-26 22:05:00', 'Solo', 3, 10);
 
 INSERT INTO PlayerMatch VALUES
-
-INSERT INTO PlayerMatch VALUES
 (1, 1, 1, 6, 900, 1200, 1),
 (2, 1, 2, 4, 650, 1100, 2),
 (3, 1, 3, 2, 400, 900, 3),
